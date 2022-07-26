@@ -18,7 +18,7 @@
 
 /* 
     Plugin name: XML-Sitemap Generator
-    Description: This plugin will generate sitemap-news.xml file in root directory each time when it call from url, to call this plugin https://yourdomain.com/xml-generate?action=auto , you can also add this in cron, For setting of the plugin please Go to <a href="options-general.php?page=main.php">Settings -> XML-Sitemap Generator</a> for setup.
+    Description: This plugin will generate sitemap-news.xml file in root directory each time when it call from url, to call this plugin https://yourdomain.com/generate-xml , you can also add this in cron, For setting of the plugin please Go to <a href="options-general.php?page=main.php">Settings -> XML-Sitemap Generator</a> for setup.
     Version: 1.0
     Author: <a href="https://www.facebook.com/ramp00786" target="_blank"> Tulsiram Kushwah</a>
     URL: 
@@ -1003,6 +1003,7 @@ function XmlGenerator(){
     $pageName = explode('/', $current_url);
     $subQstring = explode('?', end($pageName));    
     //--Check url if match with xml-generate
+    
 
     if($subQstring[0] == 'generate-xml-root'){
         echo "root";
@@ -1221,8 +1222,8 @@ function XmlGenerator(){
 
         die();
     }
-
-    if($subQstring[0] == 'generate-xml'){
+    
+    if($subQstring[0] == 'generate-xml'){ 
         
         ?>
         
