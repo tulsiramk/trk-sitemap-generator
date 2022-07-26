@@ -12,18 +12,25 @@
         background-color: whitesmoke;
     }
 </style>
-
+<?php define('SITE_URL', get_site_url()); ?>
 
 <?php
 
-/* 
-    Plugin name: XML-Sitemap Generator
-    Description: This plugin will generate sitemap-news.xml file in root directory each time when it call from url, to call this plugin https://yourdomain.com/generate-xml , you can also add this in cron, For setting of the plugin please Go to <a href="options-general.php?page=main.php">Settings -> XML-Sitemap Generator</a> for setup.
-    Version: 1.0
-    Author: <a href="https://www.facebook.com/ramp00786" target="_blank"> Tulsiram Kushwah</a>
-    URL: 
+//echo ;
+/**  
+   * Plugin name: XML-Sitemap Generator
+   * Description: This plugin will generate sitemap-news.xml file in root directory each time when it call  from url, to call this plugin http://yourdomain.com/generate-xml, For setting of the    plugin please Go to <a href="options-general.php?page=main.php">Settings -> XML-Sitemap Generator</a> for setup.
+   * Version: 1.0
+   * Author: <a href="https://www.facebook.com/ramp00786" target="_blank"> Tulsiram Kushwah</a>
+   * URL: 
 
-*/
+**/
+
+
+
+
+
+
 
 //--Initializing the main function--
 add_action('init' , 'XmlGenerator');
@@ -155,7 +162,7 @@ function trk_generate_sitemap() {
 
     ?>  
         <div id="xml-area">
-        <h1>XML Sitemap - News</h1>
+        <h1>XML Sitemap - News (Limit 1000)</h1>
         
         <div class="card" style="background-color:#c1c1c1; padding: 8px; display:inline-block; border-radius:10px;">
             <div class="card-body" style="text-shadow: 1px 1px 0px #e7e2e2;  color: #6a6868;">
@@ -243,7 +250,7 @@ function trk_generate_sitemap() {
     <!-- Created ".date("F d, Y, H:i")." -->";
 
     $posts = $wpdb->get_results("SELECT * FROM ".$wpdb->posts." WHERE `post_status`='publish' 
-    AND (`post_type`='page' OR `post_type`='post') ". $includeNoCat . ' ' . $includeNoPost." GROUP BY `ID` ORDER BY `post_modified_gmt` DESC");		
+    AND (`post_type`='page' OR `post_type`='post') ". $includeNoCat . ' ' . $includeNoPost." GROUP BY `ID` ORDER BY `post_modified_gmt` DESC LIMIT 1000");		
     
     $now = time();
     $twoDays = 2*24*60*60;
