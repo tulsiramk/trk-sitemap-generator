@@ -42,6 +42,8 @@ add_action('init' , 'XmlGenerator');
 
 
 
+
+
 /* ----Modify old plugin--- */
 
 
@@ -156,6 +158,13 @@ function trk_autobuild($postID) {
         $lastPostID = $postID;
     }
 }
+
+
+
+
+//---Start from here-
+
+
 
 function trk_generate_sitemap() {
 
@@ -305,7 +314,7 @@ function trk_generate_sitemap() {
                                 
                             $xml_sitemap_google_news .= "	
                         <n:publication_date>".str_replace(" ", "T", get_date_from_gmt($post->post_modified_gmt))."Z"."</n:publication_date>
-                        <n:title>".htmlspecialchars($post->post_title)."</n:title>
+                        <n:title>".htmlEntityMaker($post->post_title)."</n:title>
                     </n:news>
                 </url>";
             }
@@ -521,7 +530,7 @@ function trk_generate_sitemap_post_pr_page($string) {
     $page = $get_array['page'];
 
     if($get_array['page'] == 1){
-        $start = 1;
+        $start = 0;
         $limit = $trk_post_per_page;
     }
     else{
@@ -616,12 +625,11 @@ function trk_generate_sitemap_post_pr_page($string) {
     <!-- https://www.facebook.com/ramp00786 -->
     <!-- Created ".get_date_from_gmt(date("Y-m-d H:i:s"), 'F d, Y, H:i')." -->";
 
-    // echo "<br/>";
-    // echo "SELECT * FROM ".$wpdb->posts." WHERE `post_status`='publish' 
-    // AND (`post_type`='post') GROUP BY `ID` ORDER BY `post_modified_gmt` DESC LIMIT $start, $limit";
+    //  echo "<br/>";
+    //  echo "SELECT * FROM ".$wpdb->posts." WHERE `post_status`='publish' AND (`post_type`='post') GROUP BY `ID` ORDER BY `post_modified_gmt` DESC LIMIT $start, $limit";
 
-    // echo "<br/>";
-
+    //  echo "<br/>";
+    
 
     $posts = $wpdb->get_results("SELECT * FROM ".$wpdb->posts." WHERE `post_status`='publish' 
     AND (`post_type`='post') GROUP BY `ID` ORDER BY `post_modified_gmt` DESC LIMIT $start, $limit");		
@@ -961,22 +969,22 @@ function trk_generate_sitemap_root(){
 
         $xml_sitemap_google_news .= "
             <url>
-                <loc>http://localhost/tulsi_work/wp-queue/sitemap-post.xml</loc>
+                <loc>".get_site_url()."/sitemap-post.xml</loc>
                 <lastmod>".str_replace(" ", "T", get_date_from_gmt(date('Y-m-d H:i'), "Y-m-d H:s:i"))."Z"."</lastmod>
             </url>
             
             <url>
-                <loc>http://localhost/tulsi_work/wp-queue/sitemap-page.xml</loc>
+                <loc>".get_site_url()."/sitemap-page.xml</loc>
                 <lastmod>".str_replace(" ", "T", get_date_from_gmt(date('Y-m-d H:i'), "Y-m-d H:s:i"))."Z"."</lastmod>
             </url>
 
             <url>
-                <loc>http://localhost/tulsi_work/wp-queue/sitemap-news.xml</loc>
+                <loc>".get_site_url()."/sitemap-news.xml</loc>
                 <lastmod>".str_replace(" ", "T", get_date_from_gmt(date('Y-m-d H:i'), "Y-m-d H:s:i"))."Z"."</lastmod>
             </url>
 
             <url>
-                <loc>http://localhost/tulsi_work/wp-queue/sitemap-category.xml</loc>
+                <loc>".get_site_url()."/sitemap-category.xml</loc>
                 <lastmod>".str_replace(" ", "T", get_date_from_gmt(date('Y-m-d H:i'), "Y-m-d H:s:i"))."Z"."</lastmod>
             </url>
             
@@ -998,7 +1006,9 @@ function trk_generate_sitemap_root(){
         
 }
 
-
+function htmlEntityMaker($str){
+    return htmlentities(htmlspecialchars($str));
+}
 
 
 
