@@ -1007,8 +1007,25 @@ function trk_generate_sitemap_root(){
 }
 
 function htmlEntityMaker($str){
+
+    $htmlCodes = [
+        
+        '&' => '&amp;',
+        '"' => '&quot;',
+        '<' => '&lt;',
+        '>' => '&gt;',
+        "'" => '&apos;',
+    
+    ];
+
+    foreach($htmlCodes as $key => $val){
+        if (strpos($str, $key) !== false) {
+            $str = str_replace($key, $val, $str);
+        }
+    }
+    
     //return 'hello';
-    $str = htmlentities($str);
+    //$str = htmlentities($str);
     return htmlspecialchars($str);
 }
 
