@@ -29,24 +29,10 @@ add_action('init' , 'XmlGenerator');
 
 
 
-?>
 
-<style>
-    #xml-area h1{
-        display: block;
-        font-size: 2em;
-        margin-block-start: 0.67em;
-        margin-block-end: 0.67em;
-        margin-inline-start: 0px;
-        margin-inline-end: 0px;
-        font-weight: bold;
-    }
-    #xml-area table tr.high{
-        background-color: whitesmoke;
-    }
-</style>
 
-<?php
+
+
 
 
 
@@ -170,10 +156,9 @@ function trk_autobuild($postID) {
 
 
 function trk_generate_sitemap() {
-
-
+    
     ?>  
-        <div id="xml-area">
+        <div>
         <h1>XML Sitemap - News (Limit 1000)</h1>
         
         <div class="card" style="background-color:#c1c1c1; padding: 8px; display:inline-block; border-radius:10px;">
@@ -243,7 +228,7 @@ function trk_generate_sitemap() {
     echo '
             <table cellpadding="5">
             <tbody>
-                <tr class="high">
+                <tr style="background-color: whitesmoke;">
                     <th>#</th>
                     <th>XML Sitemap</th>
                     <th>Last Modified</th>
@@ -274,7 +259,17 @@ function trk_generate_sitemap() {
 
                 $num++;
 
-                echo '<tr>';
+                
+
+                if($num % 2){
+                    $cls = "";
+                }
+                else{
+                    $cls = "style='background-color: whitesmoke;'";
+                }
+
+
+                echo '<tr '.$cls.'>';
 
                     echo '<td>';
                     echo $num;
@@ -355,12 +350,12 @@ function trk_generate_sitemap() {
 }
 
 function trk_generate_sitemap_page() {
-
+    
     ?>
 
         
         
-        <div id="xml-area">
+        <div id="xml-area" class="xml-area">
         <h1>XML Sitemap - Pages</h1>
         
         <div class="card" style="background-color:#c1c1c1; padding: 8px; display:inline-block; border-radius:10px;">
@@ -432,7 +427,7 @@ function trk_generate_sitemap_page() {
     echo '
             <table cellpadding="5">
             <tbody>
-                <tr class="high">
+                <tr style="background-color: whitesmoke;">
                     <th>#</th>
                     <th>XML Sitemap</th>
                     <th>Last Modified</th>
@@ -465,7 +460,7 @@ function trk_generate_sitemap_page() {
                     $cls = "";
                 }
                 else{
-                    $cls = "class='high'";
+                    $cls = "style='background-color: whitesmoke;'";
                 }
 
 
@@ -546,7 +541,7 @@ function trk_generate_sitemap_post_pr_page($string) {
 
         
         
-        <div id="xml-area">
+        <div id="xml-area" class="xml-area">
         <h1>XML Sitemap - Posts: page <?php echo $page; ?></h1>
         
         <div class="card" style="background-color:#c1c1c1; padding: 8px; display:inline-block; border-radius:10px;">
@@ -644,7 +639,7 @@ function trk_generate_sitemap_post_pr_page($string) {
     echo '
             <table cellpadding="5">
             <tbody>
-                <tr class="high">
+                <tr style="background-color: whitesmoke;">
                     <th>#</th>
                     <th>XML Sitemap</th>
                     <th>Last Modified</th>
@@ -662,10 +657,11 @@ function trk_generate_sitemap_post_pr_page($string) {
                     $cls = "";
                 }
                 else{
-                    $cls = "class='high'";
+                    $cls = "style='background-color: whitesmoke;'";
                 }
 
-                echo '<tr '.$cls.' >';
+
+                echo '<tr '.$cls.'>';
 
                     echo '<td>';
                     echo $num;
@@ -727,8 +723,9 @@ function trk_generate_sitemap_post_pr_page($string) {
 }
 
 function trk_generate_sitemap_category(){
+    
     ?>  
-        <div id="xml-area">
+        <div id="xml-area" class="xml-area">
         <h1>XML Sitemap - Categories</h1>
         
         <div class="card" style="background-color:#c1c1c1; padding: 8px; display:inline-block; border-radius:10px;">
@@ -752,7 +749,7 @@ function trk_generate_sitemap_category(){
     echo '
         <table cellpadding="5">
             <tbody>
-                <tr class="high">
+                <tr style="background-color: whitesmoke;">
                     <th>#</th>
                     <th>XML Sitemap</th>
                     
@@ -782,7 +779,7 @@ function trk_generate_sitemap_category(){
             $cls = "";
         }
         else{
-            $cls = "class='high'";
+            $cls = "style='background-color: whitesmoke;'";
         }
 
 
@@ -835,6 +832,7 @@ function trk_generate_sitemap_category(){
 
 //Config page
 function trk_admin_page() {
+    
     $msg = "";
 
     // Check form submission and update options
@@ -921,6 +919,8 @@ function trk_admin_page() {
 
 function trk_generate_sitemap_post_all(){
 
+    
+
     $trk_post_per_page = get_option('trk_post_per_page');
     $total_posts =  wp_count_posts()->publish;
     $rows = $total_posts/$trk_post_per_page;
@@ -939,6 +939,8 @@ function trk_generate_sitemap_post_all(){
 }
 
 function trk_generate_sitemap_root(){
+
+    
 
 
     $msg = '';
@@ -1011,6 +1013,8 @@ function trk_generate_sitemap_root(){
 
 function htmlEntityMaker($str){
 
+    
+
     $htmlCodes = [
         
         '&' => '&amp;',
@@ -1039,6 +1043,8 @@ function htmlEntityMaker($str){
 
 //--Define the function for generate xml
 function XmlGenerator(){
+
+    
     //---Get url
     $current_url = home_url($_SERVER['REQUEST_URI']);
     $pageName = explode('/', $current_url);
@@ -1161,7 +1167,7 @@ function XmlGenerator(){
 
         
         
-        <div id="xml-area">
+        <div id="xml-area" class="xml-area">
         <h1>XML Sitemap - Posts</h1>
         
         <div class="card" style="background-color:#c1c1c1; padding: 8px; display:inline-block; border-radius:10px;">
@@ -1190,7 +1196,7 @@ function XmlGenerator(){
 
         <table cellpadding="5">
             <tbody>
-                <tr class="high">
+                <tr style="background-color: whitesmoke;">
                     <th>#</th>
                     <th>XML Sitemap</th>
                     <th>Last Modified</th>
@@ -1200,8 +1206,17 @@ function XmlGenerator(){
                 
                 for($i = 1; $loop >= $i; $i++){
                     //echo $i.'<br/>';
+                    if($i % 2){
+                        $cls = "style='background-color: whitesmoke;'";
+                    }
+                    else{
+                        $cls = '';
+                    }
+                    
+
+
                 ?>
-                <tr>
+                <tr <?php echo $cls; ?>>
                     <td>1</td>
                     <td>
                     
@@ -1268,7 +1283,7 @@ function XmlGenerator(){
         
         ?>
         
-        <div id="xml-area">
+        <div>
         <h1>XML Sitemap - Index</h1>
         
         <div class="card" style="background-color:#c1c1c1; padding: 8px; display:inline-block; border-radius:10px;">
@@ -1300,12 +1315,12 @@ function XmlGenerator(){
 
         <table cellpadding="5">
             <tbody>
-                <tr class="high">
+                <tr style="background-color: whitesmoke;">
                     <th>#</th>
                     <th>XML Sitemap</th>
                     <th>Last Modified</th>
                 </tr>
-                <tr class="high">
+                <tr >
                     <td>1</td>
                     <td>
                         <a href="<?php echo get_site_url() ?>/generate-xml-post"><?php echo get_site_url() ?>/sitemap-post.xml</a>
@@ -1321,7 +1336,7 @@ function XmlGenerator(){
                         ?>
                     </td>
                 </tr>
-                <tr>
+                <tr style="background-color: whitesmoke;">
                     <td>2</td>
                     <td>
                         <a href="<?php echo get_site_url() ?>/generate-xml-page"><?php echo get_site_url() ?>/sitemap-page.xml</a>
@@ -1337,7 +1352,7 @@ function XmlGenerator(){
                         ?>
                     </td>
                 </tr>
-                <tr class="high">
+                <tr>
                     <td>3</td>
                     <td>
                         <a href="<?php echo get_site_url() ?>/generate-xml-news"><?php echo get_site_url() ?>/sitemap-news.xml</a>
@@ -1354,7 +1369,7 @@ function XmlGenerator(){
                     </td>
                 </tr>
 
-                <tr>
+                <tr style="background-color: whitesmoke;">
                     <td>4</td>
                     <td>
                         <a href="<?php echo get_site_url() ?>/generate-xml-category"><?php echo get_site_url() ?>/sitemap-category.xml</a>
