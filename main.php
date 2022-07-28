@@ -1007,8 +1007,13 @@ function trk_generate_sitemap_root(){
 }
 
 function htmlEntityMaker($str){
-    return htmlentities(htmlspecialchars($str));
+    //return 'hello';
+    $str = htmlentities($str);
+    return htmlspecialchars($str);
 }
+
+
+
 
 
 
