@@ -834,7 +834,7 @@ function trk_generate_sitemap_post_all_in_one_page() {
     
 
     $posts = $wpdb->get_results("SELECT * FROM ".$wpdb->posts." WHERE `post_status`='publish' 
-    AND (`post_type`='post') GROUP BY `ID` ORDER BY `post_modified_gmt` DESC LIMIT 1000");		
+    AND (`post_type`='post') GROUP BY `ID` ORDER BY `post_modified_gmt` DESC LIMIT 1, 1000");		
     
     $now = time();
     $twoDays = 2*24*60*60;
