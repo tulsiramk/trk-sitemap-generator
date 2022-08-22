@@ -14,37 +14,9 @@ define('SITE_URL', get_site_url());
 
 //--Initializing the main function--
 add_action('init' , 'XmlGenerator');
-
-
-
-
-
-
-
-
-
-
 /* ----Modify old plugin--- */
-
-
-
-
-
-
-
-
-
-
-
-
-
 $trk_sitemap_version = "1.0.0";
-
-
-
 add_option('trk_post_per_page', 100);
-
-
 // Aggiungiamo le opzioni di default
 add_option('trk_news_active', true);
 add_option('trk_active', true);
@@ -68,12 +40,9 @@ add_option('trk_n_excludepostlist','');
 add_action('delete_post', 'trk_autobuild' ,9999,1);	
 add_action('publish_post', 'trk_autobuild' ,9999,1);	
 add_action('publish_page', 'trk_autobuild' ,9999,1);
-
 // Carichiamo le opzioni
 $trk_news_active = get_option('trk_news_active');
-
 $trk_post_per_page = get_option('trk_post_per_page');
-
 $trk_active = get_option('trk_active');
 $trk_path = get_option('trk_path');
 //$trk_publication_name = get_option('trk_publication_name','<publication_name>');
@@ -81,11 +50,8 @@ $trk_n_name = get_option('trk_n_name','<n:name>');
 $trk_n_lang = get_option('trk_n_lang','<n:language>');
 $trk_n_access = get_option('trk_n_access','<n:access>');
 $trk_n_genres = get_option('trk_n_genres','<n:genres>');
-
-
 // Aggiungiamo la pagina delle opzioni
-add_action('admin_menu', 'trk_add_pages');
-	
+add_action('admin_menu', 'trk_add_pages');	
 //Aggiungo la pagina della configurazione
 function trk_add_pages() {
     add_options_page("XML-Sitemap Generator", "XML-Sitemap Generator", 9, basename(__FILE__), "trk_admin_page");
@@ -118,7 +84,6 @@ function trk_permissions($fileName) {
 
     return $trk_permission;
 }
-
 /*
     Auto Build sitemap
 */
@@ -147,14 +112,7 @@ function trk_autobuild($postID) {
         $lastPostID = $postID;
     }
 }
-
-
-
-
 //---Start from here-
-
-
-
 function trk_generate_sitemap() {
     
     ?>  
@@ -349,11 +307,240 @@ function trk_generate_sitemap() {
     }
 }
 
-function trk_generate_sitemap_page() {
+function trk_generate_sitemap_with_posts() {
     
-    ?>
-
+    ?>  
+        <div>
+        <h1>XML Sitemap - News (Limit 1000)</h1>
         
+        <div class="card" style="background-color:#c1c1c1; padding: 8px; display:inline-block; border-radius:10px;">
+            <div class="card-body" style="text-shadow: 1px 1px 0px #e7e2e2;  color: #6a6868;">
+                Plugin: Sitemap xml Generator <br/>
+                Author: Tulsiram Kushwah<br/>
+            </div>
+        </div>
+
+        <!-- Menu -->
+        <ul style="list-style:none; display:flex">
+            <li style="margin-right:5px"> <a href="<?php echo get_site_url(); ?>/generate-xml"> Home </a></li>
+            <li style="margin-right:5px; padding-top:2px" >></li>
+            <li> news </a> </li>
+        </ul>
+        <!-- Menu -->
+    <?php
+
+        echo  "The xml file is generated with the name of sitemap-news.xml (<a target='_blank' href='".get_site_url()."/sitemap-news.xml'>".get_site_url()."/sitemap-news.xml</a>)";
+
+        echo "<br/>";
+        echo "<br/>";
+
+        echo  "The xml file is generated with the name of sitemap-post.xml (<a target='_blank' href='".get_site_url()."/sitemap-post.xml'>".get_site_url()."/sitemap-post.xml</a>)";
+
+
+
+    global $trk_sitemap_version, $table_prefix;
+    global $wpdb;
+    
+    $t = $table_prefix;
+    
+    $trk_news_active = get_option('trk_news_active');
+    $trk_active = get_option('trk_active');
+    $trk_path = get_option('trk_path');
+    //add_option('trk_publication_name','<publication_name>');
+    $trk_n_name = get_option('trk_n_name');
+    $trk_n_lang = get_option('trk_n_lang');
+    // Genere dei contenuti
+    $trk_n_genres = get_option('trk_n_genres');
+    $trk_n_genres_type = get_option('trk_n_genres_type');
+    // Tipo di accesso dell'articolo - Facoltativo
+    $trk_n_access = get_option('trk_n_access');
+    $trk_n_access_type = get_option('trk_n_access_type');
+    //add_option('trk_n_access_type','Registration');
+    //$trk_n_excludecat = get_option('trk_n_excludecat');
+    $trk_n_excludecatlist = get_option('trk_n_excludecatlist');
+    $trk_n_excludepostlist = get_option('trk_n_excludepostlist');
+    
+    $includeMe = '';
+    $includeNoCat = '';
+    $includeNoPost = '';
+    if ( $trk_n_excludecatlist <> NULL ) {
+        $exPosts = get_objects_in_term($trk_n_excludecatlist,"category");
+        $includeNoCat = ' AND `ID` NOT IN ('.implode(",",$exPosts).')';
+        $ceck = implode(",",$exPosts);
+        if ($ceck == '' || $ceck == ' ') $includeNoCat = '';
+        }
+    if ($trk_n_excludepostlist != ''){
+        $includeNoPost = ' AND `ID` NOT IN ('.$trk_n_excludepostlist.')';
+        $ceck = implode(",",$exPosts);
+        if ($trk_n_excludepostlist == '' || $trk_n_excludepostlist == ' ') $includeNoPost = '';
+        }
+    
+    $trk_permission = trk_permissions('sitemap-news.xml');
+    if ($trk_permission > 2 || (!$trk_active && !$trk_news_active)) return;
+
+    $trk_permission_post = trk_permissions('sitemap-post.xml');
+    if ($trk_permission_post > 2 || (!$trk_active && !$trk_news_active)) return;
+
+    //mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+    //mysql_query("SET NAMES '".DB_CHARSET."'");
+    //mysql_select_db(DB_NAME);
+
+    echo '
+            <table cellpadding="5">
+            <tbody>
+                <tr style="background-color: whitesmoke;">
+                    <th>#</th>
+                    <th>XML Sitemap</th>
+                    <th>Last Modified</th>
+                </tr>
+    ';
+
+
+
+    $home = get_option('home') . "/";
+
+    $xml_sitemap_google_news = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    $xml_sitemap_google_news .= "\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:n=\"http://www.google.com/schemas/sitemap-news/0.9\">
+    <!-- Generated by XML-Sitemap Generator ".$trk_sitemap_version." -->
+    <!-- plugin by Tulsiram kushwah -->
+    <!-- https://www.facebook.com/ramp00786 -->
+    <!-- Created ".get_date_from_gmt(date('Y-m-d H:i:s'), 'F d, Y, H:i')." -->";
+
+    $xml_sitemap_google_posts = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    $xml_sitemap_google_posts .= "\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:n=\"http://www.google.com/schemas/sitemap-post.xml/0.9\">
+    <!-- Generated by XML-Sitemap Generator ".$trk_sitemap_version." -->
+    <!-- plugin by Tulsiram kushwah -->
+    <!-- sitemap for posts limit 1000 -->
+    <!-- https://www.facebook.com/ramp00786 -->
+    <!-- Created ".get_date_from_gmt(date("Y-m-d H:i:s"), 'F d, Y, H:i')." -->";
+
+
+
+    $posts = $wpdb->get_results("SELECT * FROM ".$wpdb->posts." WHERE `post_status`='publish' 
+    AND (`post_type`='page' OR `post_type`='post') ". $includeNoCat . ' ' . $includeNoPost." GROUP BY `ID` ORDER BY `post_modified_gmt` DESC LIMIT 1000");		
+    
+    $now = time();
+    $twoDays = 2*24*60*60;
+    $num = 0;
+    foreach ($posts as $post) {
+        if ($trk_news_active && $trk_permission != 2) {
+            $postDate = strtotime($post->post_date);
+            if ($now - $postDate < $twoDays) {
+
+                $num++;
+
+                
+
+                if($num % 2){
+                    $cls = "";
+                }
+                else{
+                    $cls = "style='background-color: whitesmoke;'";
+                }
+
+
+                echo '<tr '.$cls.'>';
+
+                    echo '<td>';
+                    echo $num;
+                    echo '</td>';
+
+                    echo '<td>';
+                    echo '<a href="'.trk_escapexml(get_permalink($post->ID)).'">';
+                    echo trk_escapexml(get_permalink($post->ID));
+                    echo '</a>';
+                    echo '</td>';
+
+
+                    echo '<td>';
+                    echo str_replace(" ", "T", get_date_from_gmt($post->post_modified_gmt))."Z";
+                    echo '</td>';
+
+                echo '<tr>';
+
+
+
+                $xml_sitemap_google_news .= "
+                <url>
+                    <loc>".trk_escapexml(get_permalink($post->ID))."</loc>
+                    <n:news>
+                        <n:publication>
+                            <n:name>".$trk_n_name."</n:name>
+                            <n:language>".$trk_n_lang."</n:language>
+                        </n:publication>";                            
+                            // Se selzionato il genere allora lo aggiungo
+                            if ($trk_n_genres == true) {
+                                $xml_sitemap_google_news .= "
+                                <n:genres>".$trk_n_genres_type."</n:genres>";
+                                }
+                            // Se selzionato il tipo di accesso allora lo aggiungo
+                            if ($trk_n_access == true) {
+                                $xml_sitemap_google_news .= "
+                                <n:access>".$trk_n_access_type."</n:access>";
+                                }	
+                                
+                            $xml_sitemap_google_news .= "	
+                        <n:publication_date>".str_replace(" ", "T", get_date_from_gmt($post->post_modified_gmt))."Z"."</n:publication_date>
+                        <n:title>".htmlEntityMaker($post->post_title)."</n:title>
+                    </n:news>
+                </url>";
+
+                $xml_sitemap_google_posts .= "
+                <url>
+                    <loc>".trk_escapexml(get_permalink($post->ID))."</loc>
+                    <lastmod>".str_replace(" ", "T", get_date_from_gmt($post->post_modified_gmt))."Z"."</lastmod>
+                </url>";
+
+            }
+        }
+    }
+
+
+    echo '
+            </tbody>
+         </table>
+    ';
+
+
+
+    $xml_sitemap_google_news .= "\n</urlset>";
+
+    $xml_sitemap_google_posts .= "\n</urlset>";
+    
+    
+    if ($trk_news_active && $trk_permission != 2) {
+        $fp = fopen(ABSPATH . $trk_path . "sitemap-news.xml", 'w');
+        fwrite($fp, $xml_sitemap_google_news);
+        fclose($fp);
+    }
+
+    if ($trk_news_active && $trk_permission_post != 2) {
+        $fp23 = fopen(ABSPATH . $trk_path . "sitemap-post.xml", 'w');
+        fwrite($fp23, $xml_sitemap_google_posts);
+        fclose($fp23);
+    }
+    
+
+    $trk_last_ping = get_option('trk_last_ping');
+    if ((time() - $trk_last_ping) > 60 * 60) {
+        //get_headers("http://www.google.com/webmasters/tools/ping?sitemap=" . urlencode($home . $trk_path . "sitemap.xml"));	//PHP5+
+        if(file_exists("http://www.google.com/webmasters/tools/ping?sitemap=" . urlencode($home . $trk_path . "sitemap-news.xml"))){
+            $fp = @fopen("http://www.google.com/webmasters/tools/ping?sitemap=" . urlencode($home . $trk_path . "sitemap-news.xml"), 80);
+            @fclose($fp);
+            update_option('trk_last_ping', time());
+        }
+
+        // if(file_exists("http://www.google.com/webmasters/tools/ping?sitemap=" . urlencode($home . $trk_path . "sitemap-post.xml"))){
+        //     $fp = @fopen("http://www.google.com/webmasters/tools/ping?sitemap=" . urlencode($home . $trk_path . "sitemap-post.xml"), 80);
+        //     @fclose($fp);
+        //     update_option('trk_last_ping', time());
+        // }
+        
+    }
+}
+
+function trk_generate_sitemap_page() {    
+    ?>       
         
         <div id="xml-area" class="xml-area">
         <h1>XML Sitemap - Pages</h1>
@@ -722,7 +909,6 @@ function trk_generate_sitemap_post_pr_page($string) {
     //echo $msg = "The xml file is generated with the name of sitemap-post-page-".$get_array['page'].".xml (<a target='_blank' href='".get_site_url()."/sitemap-post-page-".$page.".xml'>".get_site_url()."/sitemap-post-page-".$get_array['page'].".xml</a>)";
 }
 
-
 function trk_generate_sitemap_post_all_in_one_page() {
 
     
@@ -914,7 +1100,6 @@ function trk_generate_sitemap_post_all_in_one_page() {
 
     
 }
-
 
 function trk_generate_sitemap_category(){
     
@@ -1205,9 +1390,6 @@ function trk_generate_sitemap_root(){
         
 }
 
-
-
-
 function htmlEntityMaker($str){
 
     
@@ -1232,11 +1414,6 @@ function htmlEntityMaker($str){
     //$str = htmlentities($str);
     return htmlspecialchars($str);
 }
-
-
-
-
-
 
 //--Define the function for generate xml
 function XmlGenerator(){
@@ -1273,7 +1450,8 @@ function XmlGenerator(){
         elseif ($trk_permission == 2) $msg = "Error: there is a problem with <em>sitemap-news.xml</em>. It doesn't exist or is not writable.";
         elseif ($trk_permission == 3) $msg = "Error: there is a problem with <em>sitemap-news.xml</em>. It doesn't exist or is not writable.";
         if($msg == ''){
-            trk_generate_sitemap();
+            //trk_generate_sitemap();
+            trk_generate_sitemap_with_posts();
         }
         else{
             echo $msg;
@@ -1368,7 +1546,8 @@ function XmlGenerator(){
         elseif ($trk_permission == 2) $msg = "Error: there is a problem with <em>sitemap-post.xml</em>. It doesn't exist or is not writable.";
         elseif ($trk_permission == 3) $msg = "Error: there is a problem with <em>sitemap-post.xml</em>. It doesn't exist or is not writable.";
         if($msg == ''){
-            trk_generate_sitemap_post_all_in_one_page();
+            //trk_generate_sitemap_post_all_in_one_page();
+            trk_generate_sitemap_with_posts();
         }
         else{
             echo $msg;
