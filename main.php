@@ -84,34 +84,38 @@ function trk_permissions($fileName) {
 
     return $trk_permission;
 }
+
+
 /*
     Auto Build sitemap
 */
-function trk_autobuild($postID) {
-    global $wp_version;
-    $isScheduled = false;
-    $lastPostID = 0;
-    //Ricostruisce la sitemap una volta per post se non fa import
-    if($lastPostID != $postID && (!defined('WP_IMPORTING') || WP_IMPORTING != true)) {
+// function trk_autobuild($postID) {
+//     global $wp_version;
+//     $isScheduled = false;
+//     $lastPostID = 0;
+//     //Ricostruisce la sitemap una volta per post se non fa import
+//     if($lastPostID != $postID && (!defined('WP_IMPORTING') || WP_IMPORTING != true)) {
         
-        //Costruisce la sitemap direttamente oppure fa un cron
-        if(floatval($wp_version) >= 2.1) {
-            if(!$isScheduled) {
-                //Ogni 15 secondi.
-                //Pulisce tutti gli hooks.
-                wp_clear_scheduled_hook(trk_generate_sitemap());
-                wp_schedule_single_event(time()+15,trk_generate_sitemap());
-                $isScheduled = true;
-            }
-        } else {
-            //Costruisce la sitemap una volta sola e mai in bulk mode
-            if(!$lastPostID && (!isset($_GET["delete"]) || count((array) $_GET['delete'])<=0)) {
-                trk_generate_sitemap();
-            }
-        }
-        $lastPostID = $postID;
-    }
-}
+//         //Costruisce la sitemap direttamente oppure fa un cron
+//         if(floatval($wp_version) >= 2.1) {
+//             if(!$isScheduled) {
+//                 //Ogni 15 secondi.
+//                 //Pulisce tutti gli hooks.
+//                 wp_clear_scheduled_hook(trk_generate_sitemap());
+//                 wp_schedule_single_event(time()+15,trk_generate_sitemap());
+//                 $isScheduled = true;
+//             }
+//         } else {
+//             //Costruisce la sitemap una volta sola e mai in bulk mode
+//             if(!$lastPostID && (!isset($_GET["delete"]) || count((array) $_GET['delete'])<=0)) {
+//                 trk_generate_sitemap();
+//             }
+//         }
+//         $lastPostID = $postID;
+//     }
+// }
+
+
 //---Start from here-
 function trk_generate_sitemap() {
     
