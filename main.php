@@ -308,6 +308,8 @@ function trk_generate_sitemap() {
 }
 
 function trk_generate_sitemap_with_posts() {
+
+   
     
     ?>  
         <div>
@@ -328,6 +330,8 @@ function trk_generate_sitemap_with_posts() {
         </ul>
         <!-- Menu -->
     <?php
+
+    
 
         echo  "The xml file is generated with the name of sitemap-news.xml (<a target='_blank' href='".get_site_url()."/sitemap-news.xml'>".get_site_url()."/sitemap-news.xml</a>)";
 
@@ -414,10 +418,14 @@ function trk_generate_sitemap_with_posts() {
     <!-- https://www.facebook.com/ramp00786 -->
     <!-- Created ".get_date_from_gmt(date("Y-m-d H:i:s"), 'F d, Y, H:i')." -->";
 
+    // $posts = $wpdb->get_results("SELECT post_modified_gmt,ID,post_date FROM ".$wpdb->posts." WHERE `post_status`='publish' AND (`post_type`='page' OR `post_type`='post') ". $includeNoCat . ' ' . $includeNoPost." ORDER BY `post_modified_gmt` DESC LIMIT 1");	
+    // echo "<br/>";   
+    $todayDate = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s") . ' -3 day'));
+    // echo "<br/>";
 
-
-    $posts = $wpdb->get_results("SELECT * FROM ".$wpdb->posts." WHERE `post_status`='publish' 
-    AND (`post_type`='page' OR `post_type`='post') ". $includeNoCat . ' ' . $includeNoPost." GROUP BY `ID` ORDER BY `post_modified_gmt` DESC LIMIT 1000");		
+    $posts = $wpdb->get_results("SELECT post_modified_gmt,ID,post_date FROM ".$wpdb->posts." WHERE DATE(post_date) > DATE('".$todayDate."') AND  `post_status`='publish' AND (`post_type`='page' OR `post_type`='post') ". $includeNoCat . ' ' . $includeNoPost." ORDER BY `post_modified_gmt` DESC LIMIT 1000");	
+    
+    
     
     $now = time();
     $twoDays = 2*24*60*60;
