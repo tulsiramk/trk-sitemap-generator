@@ -37,9 +37,9 @@ add_option('trk_n_access_type','Subscription');
 add_option('trk_n_excludecatlist','');
 add_option('trk_n_excludepostlist','');
 //Controllo eliminazione, pubblicazione pagine post per rebuild
-add_action('delete_post', 'trk_autobuild' ,9999,1);	
-add_action('publish_post', 'trk_autobuild' ,9999,1);	
-add_action('publish_page', 'trk_autobuild' ,9999,1);
+// add_action('delete_post', 'trk_autobuild' ,9999,1);	
+// add_action('publish_post', 'trk_autobuild' ,9999,1);	
+// add_action('publish_page', 'trk_autobuild' ,9999,1);
 // Carichiamo le opzioni
 $trk_news_active = get_option('trk_news_active');
 $trk_post_per_page = get_option('trk_post_per_page');
