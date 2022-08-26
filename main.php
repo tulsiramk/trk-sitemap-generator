@@ -1297,9 +1297,9 @@ function trk_admin_page() {
     
     $trk_permission = trk_permissions('sitemap-news.xml');
     
-    if ($trk_permission == 1) $msg = "Error: there is a problem with <em>sitemap-news.xml</em>. It doesn't exist or is not writable. <a href=\"http://www.andreapernici.com/wordpress/google-news-sitemap/\" target=\"_blank\" >For help see the plugin's homepage</a>.";
-    elseif ($trk_permission == 2) $msg = "Error: there is a problem with <em>sitemap-news.xml</em>. It doesn't exist or is not writable. <a href=\"http://www.andreapernici.com/wordpress/google-news-sitemap/\" target=\"_blank\" >For help see the plugin's homepage</a>.";
-    elseif ($trk_permission == 3) $msg = "Error: there is a problem with <em>sitemap-news.xml</em>. It doesn't exist or is not writable. <a href=\"http://www.andreapernici.com/wordpress/google-news-sitemap/\" target=\"_blank\" >For help see the plugin's homepage</a>.";
+    if ($trk_permission == 1) $msg = "Error: there is a problem with <em>sitemap-news.xml</em>. It doesn't exist or is not writable. <a href=\"https://www.facebook.com/ramp00786/\" target=\"_blank\" >For help see the plugin's homepage</a>.";
+    elseif ($trk_permission == 2) $msg = "Error: there is a problem with <em>sitemap-news.xml</em>. It doesn't exist or is not writable. <a href=\"https://www.facebook.com/ramp00786/\" target=\"_blank\" >For help see the plugin's homepage</a>.";
+    elseif ($trk_permission == 3) $msg = "Error: there is a problem with <em>sitemap-news.xml</em>. It doesn't exist or is not writable. <a href=\"https://www.facebook.com/ramp00786/\" target=\"_blank\" >For help see the plugin's homepage</a>.";
 
     
 
