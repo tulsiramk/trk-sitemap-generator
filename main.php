@@ -25,7 +25,13 @@ add_option('trk_path', "./");
 add_option('trk_last_ping', 0);
 //add_option('trk_publication_name','<publication_name>');
 add_option('trk_n_name',get_bloginfo( 'name' ));
-add_option('trk_n_lang','it');
+if(get_locale() != ''){
+    add_option('trk_n_lang',get_locale());
+}
+else{
+    add_option('trk_n_lang','it');
+}
+
 // Genere dei contenuti
 add_option('trk_n_genres',false);
 add_option('trk_n_genres_type','blog');
