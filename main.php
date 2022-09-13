@@ -2,10 +2,9 @@
 /**  
    * Plugin name: XML-Sitemap Generator
    * Description: This plugin will generate sitemap-news.xml file in root directory each time when it call  from url, to call this plugin http://yourdomain.com/generate-xml, For setting of the    plugin please Go to <a href="options-general.php?page=main.php">Settings -> XML-Sitemap Generator</a> for setup.
-   * Version: 1.0
+   * Version: 1.2 Updated at 13, Sep, 2022
    * Author: <a href="https://www.facebook.com/ramp00786" target="_blank"> Tulsiram Kushwah</a>
    * URL: https://prudour.com/
-
 **/
 
 
@@ -25,11 +24,13 @@ add_option('trk_path', "./");
 add_option('trk_last_ping', 0);
 //add_option('trk_publication_name','<publication_name>');
 add_option('trk_n_name',get_bloginfo( 'name' ));
-if(get_locale() != ''){
-    add_option('trk_n_lang',get_locale());
+
+if(get_locale() != ''){ 
+    $strings = explode('_', get_locale());    
+    add_option('trk_n_lang',$strings[0]);
 }
 else{
-    add_option('trk_n_lang','it');
+    add_option('trk_n_lang','en');
 }
 
 // Genere dei contenuti
@@ -433,7 +434,7 @@ function trk_generate_sitemap_with_posts() {
     $todayDate = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s") . ' -3 day'));
     // echo "<br/>";
 
-    $posts = $wpdb->get_results("SELECT post_modified_gmt,ID,post_date FROM ".$wpdb->posts." WHERE DATE(post_date) > DATE('".$todayDate."') AND  `post_status`='publish' AND (`post_type`='page' OR `post_type`='post') ". $includeNoCat . ' ' . $includeNoPost." ORDER BY `post_modified_gmt` DESC LIMIT 1000");	
+    $posts = $wpdb->get_results("SELECT post_modified_gmt,ID,post_date,post_title FROM ".$wpdb->posts." WHERE DATE(post_date) > DATE('".$todayDate."') AND  `post_status`='publish' AND (`post_type`='page' OR `post_type`='post') ". $includeNoCat . ' ' . $includeNoPost." ORDER BY `post_modified_gmt` DESC LIMIT 1000");	
     
     
     
@@ -485,21 +486,29 @@ function trk_generate_sitemap_with_posts() {
                         <n:publication>
                             <n:name>".$trk_n_name."</n:name>
                             <n:language>".$trk_n_lang."</n:language>
-                        </n:publication>";                            
+                        </n:publication>";  
+                        
+                        
                             // Se selzionato il genere allora lo aggiungo
                             if ($trk_n_genres == true) {
                                 $xml_sitemap_google_news .= "
                                 <n:genres>".$trk_n_genres_type."</n:genres>";
-                                }
+                            }
                             // Se selzionato il tipo di accesso allora lo aggiungo
                             if ($trk_n_access == true) {
                                 $xml_sitemap_google_news .= "
                                 <n:access>".$trk_n_access_type."</n:access>";
-                                }	
-                                
-                            $xml_sitemap_google_news .= "	
-                        <n:publication_date>".str_replace(" ", "T", get_date_from_gmt($post->post_modified_gmt))."Z"."</n:publication_date>
-                        <n:title>".htmlEntityMaker($post->post_title)."</n:title>
+                            }	
+
+                            $xml_sitemap_google_news .= "<n:publication_date>";
+                            $xml_sitemap_google_news .= str_replace(" ", "T", get_date_from_gmt($post->post_modified_gmt))."Z";
+                            $xml_sitemap_google_news .= "</n:publication_date>";
+
+                            $xml_sitemap_google_news .= "<n:title>";
+                            $xml_sitemap_google_news .= htmlEntityMaker($post->post_title);
+                            $xml_sitemap_google_news .= "</n:title>";
+
+                    $xml_sitemap_google_news .= "  
                     </n:news>
                 </url>";
 
